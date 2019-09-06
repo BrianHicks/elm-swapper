@@ -8,7 +8,7 @@ Be Brian and know how to install this. It's in experiment phase right now.
 
 ## Usage
 
-use `elm-swapper` wherever you'd use `elm`. (In fact, it should be safe to `alias elm=elm-swapper`.)
+Use `elm-swapper` wherever you'd use `elm`. (In fact, it should be safe to `alias elm=elm-swapper`.)
 
 For example, in an 0.19.0 project:
 
