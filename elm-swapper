@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# find the right elm.json and the right version
+function locate_rootmost_elm_json() {
+  local here
+  here="$PWD"
+
+  while test "$here" != '/'; do
+    if test -f "$here/elm.json"; then
+      echo "$here/elm.json"
+      return 0
+    fi
+
+    here="$(dirname "$here")"
+  done
+
+  return 1
+}
+
+# what version of Elm do we need?
+ELM_JSON="$(locate_rootmost_elm_json)"
+ELM_VERSION="$(jq -r '.["elm-version"]' "$ELM_JSON")"
+
+# where should we cache
+ELM_SWAPPER_HOME="${ELM_SWAPPER_HOME:-${XDG_CONFIG_HOME:-${HOME:-$(realpath ~)}/.config}/elm-swapper}"
+BINARY="${ELM_SWAPPER_HOME}/${ELM_VERSION}/elm"
+
+if ! test -f "$BINARY"; then
+  # figure out which binary to download
+  declare OS ARCH
+  case "$(uname --operating-system)" in
+    Darwin)
+      OS="mac"
+      ;;
+
+    Linux)
+      OS="linux"
+      ;;
+
+    *)
+      echo "sorry, I can't download binaries for the $(uname --operating-system) operating system yet. Please file a bug."
+      ;;
+  esac
+
+  case "$(uname --machine)" in
+    x86_64)
+      ARCH="64-bit"
+      ;;
+
+    *)
+      echo "sorry, I can't download binaries for the $(uname --machine) architecture yet. Please file a bug."
+      ;;
+  esac
+
+  mkdir -p "$(dirname "$BINARY")"
+  curl --location "https://github.com/elm/compiler/releases/download/0.19.0/binary-for-${OS}-${ARCH}.gz" | gunzip > "$BINARY"
+  chmod +x "$BINARY"
+
+  # verify that the downloaded binary is the right one
+  declare SHA256
+  case "${OS}-${ARCH}" in
+    "mac-64-bit")
+      SHA256="cd76641521fb9811f7812602dd4607c310100406a00f9eb9b0d250ba4f2d218c"
+      ;;
+
+    "linux-64-bit")
+      SHA256="5d0f32a4fe4e35a1e219beecb8f2aac53f96af44a6e42dd5a005bd4e4dcd85e3"
+      ;;
+  esac
+
+  DOWNLOADED_SHA256="$(sha256sum "$BINARY" | cut -f 1 -d ' ')"
+  if test "$DOWNLOADED_SHA256" != "$SHA256"; then
+    echo "hey, these sha256s do not match! I was expecting $SHA256 but got $DOWNLOADED_SHA256"
+
+    # don't keep a potentially comporimised binary on someone's system
+    rm "$BINARY"
+
+    # get outta here!
+    exit 1
+  fi
+fi
+
+exec "$BINARY" "$@"
