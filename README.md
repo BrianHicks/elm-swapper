@@ -35,6 +35,34 @@ $ elm-swapper --version
 Elm 0.18.0 and prior had multiple binaries and the dispatch would be too annoying to do initially.
 This is not "never", though, just "not now."
 
+## Performance
+
+It's a bash script right now, so performance definitely has some low-hanging fruit.
+
+That said, let's check out the total time to issue `--version` from both the bare binary and with the added checks:
+
+| With    | Without | Difference | % Change |
+|=========|=========|============|==========|
+| 23.25ms | 36.49ms | 13.24ms    | +56.95%  |
+
+### Raw Runs
+
+```sh
+$ bench '~/.config/elm-swapper/0.19.0/elm --version'
+benchmarking ~/.config/elm-swapper/0.19.0/elm --version
+time                 23.25 ms   (22.88 ms .. 23.64 ms)
+                     0.999 R²   (0.997 R² .. 0.999 R²)
+mean                 23.92 ms   (23.62 ms .. 24.33 ms)
+std dev              809.5 μs   (583.1 μs .. 1.195 ms)
+
+$ bench './elm-swapper --version'
+benchmarking ./elm-swapper --version
+time                 36.49 ms   (36.11 ms .. 36.87 ms)
+                     1.000 R²   (0.999 R² .. 1.000 R²)
+mean                 36.79 ms   (36.55 ms .. 37.08 ms)
+std dev              537.0 μs   (379.5 μs .. 798.2 μs)
+```
+
 ## Configuration
 
 You mostly shouldn't need to configure `elm-swapper`.
