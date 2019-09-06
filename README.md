@@ -38,3 +38,9 @@ You can control where the binaries get downloaded with `ELM_SWAPPER_HOME`.
 It defaults to `$XDG_CONFIG/elm-swapper` and falls back to `$HOME/elm-swapper`.
 
 If you're packaging elm-swapper with Elm as an operating system package, you should be able to pre-seed these locations.
+
+## License
+
+Don't use this right now.
+It's proprietary source that just so happens to be visible on GitHub for discussion purposes.
+Shoo.
