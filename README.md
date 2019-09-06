@@ -30,6 +30,10 @@ $ elm-swapper --version
 0.19.1
 ```
 
+`elm-swapper` only works for versions 0.19.0 and greater.
+Elm 0.18.0 and prior had multiple binaries and the dispatch would be too annoying to do initially.
+This is not "never", though, just "not now."
+
 ## Configuration
 
 You mostly shouldn't need to configure `elm-swapper`.
