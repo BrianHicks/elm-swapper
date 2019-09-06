@@ -6,6 +6,8 @@ Automatically use the right version of Elm depending on the version specified in
 
 Be Brian and know how to install this. It's in experiment phase right now.
 
+(or less snarky: have direnv and nix installed, enter the directory, run scripts.)
+
 ## Usage
 
 Use `elm-swapper` wherever you'd use `elm`. (In fact, it should be safe to `alias elm=elm-swapper`.)
