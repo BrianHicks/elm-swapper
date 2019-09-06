@@ -42,7 +42,7 @@ It's a bash script right now, so performance definitely has some low-hanging fru
 That said, let's check out the total time to issue `--version` from both the bare binary and with the added checks:
 
 | With    | Without | Difference | % Change |
-|=========|=========|============|==========|
+|---------|---------|------------|----------|
 | 23.25ms | 36.49ms | 13.24ms    | +56.95%  |
 
 I'd guess that this could be done at least twice as fast by something better than a bash script.
