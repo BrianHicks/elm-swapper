@@ -1,6 +1,11 @@
 # Elm Swapper
 
 Automatically use the right version of Elm depending on the version specified in `elm.json`.
+If you run `elm-swapper` in a directory which has a parent `elm.json` somewhere, it will:
+
+1. run the right Elm binary if there is one in it's cache
+2. download the right Elm binary if there is not a cached version
+3. if it has to download, it will also run a checksum to make sure we don't download a bad version
 
 ## Usage
 
