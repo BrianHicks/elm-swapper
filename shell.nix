@@ -8,5 +8,5 @@ with import (builtins.fetchTarball rec {
 
 stdenv.mkDerivation {
   name = "elm-swapper";
-  buildInputs = [ git bash ];
+  buildInputs = [ git bash jq ];
 }
