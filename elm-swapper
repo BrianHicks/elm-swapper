@@ -1,26 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# find the right elm.json and the right version
-function locate_rootmost_elm_json() {
+# find the right version
+function find_version() {
   local here
   here="$PWD"
 
   while test "$here" != '/'; do
     if test -f "$here/elm.json"; then
-      echo "$here/elm.json"
+      jq -r '.["elm-version"]' "$here/elm.json"
       return 0
     fi
 
     here="$(dirname "$here")"
   done
 
-  return 1
+  # only used if we cannot find an elm.json. Useful for `elm init`, `elm repl`, etc.
+  echo "0.19.0"
 }
 
-# what version of Elm do we need?
-ELM_JSON="$(locate_rootmost_elm_json)"
-ELM_VERSION="$(jq -r '.["elm-version"]' "$ELM_JSON")"
+ELM_VERSION="$(find_version)"
 
 # where should we cache
 ELM_SWAPPER_HOME="${ELM_SWAPPER_HOME:-${XDG_CONFIG_HOME:-${HOME:-$(realpath ~)}/.config}/elm-swapper}"
