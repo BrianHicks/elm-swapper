@@ -43,26 +43,26 @@ That said, let's check out the total time to issue `--version` from both the bar
 
 | With    | Without | Difference | % Change |
 |---------|---------|------------|----------|
-| 23.25ms | 36.49ms | 13.24ms    | +56.95%  |
+| 32.89ms | 21.92ms | 10.97ms    | +50.04%  |
 
 I'd guess that this could be done at least twice as fast by something better than a bash script.
 
 ### Raw Runs
 
 ```sh
-$ bench '~/.config/elm-swapper/0.19.0/elm --version'
-benchmarking ~/.config/elm-swapper/0.19.0/elm --version
-time                 23.25 ms   (22.88 ms .. 23.64 ms)
-                     0.999 R²   (0.997 R² .. 0.999 R²)
-mean                 23.92 ms   (23.62 ms .. 24.33 ms)
-std dev              809.5 μs   (583.1 μs .. 1.195 ms)
-
 $ bench './elm-swapper --version'
 benchmarking ./elm-swapper --version
-time                 36.49 ms   (36.11 ms .. 36.87 ms)
-                     1.000 R²   (0.999 R² .. 1.000 R²)
-mean                 36.79 ms   (36.55 ms .. 37.08 ms)
-std dev              537.0 μs   (379.5 μs .. 798.2 μs)
+time                 32.89 ms   (32.25 ms .. 33.55 ms)
+                     0.999 R²   (0.998 R² .. 1.000 R²)
+mean                 33.75 ms   (33.43 ms .. 34.19 ms)
+std dev              777.5 μs   (553.1 μs .. 1.109 ms)
+
+$ bench '~/.config/elm-swapper/0.19.0/elm --version'
+benchmarking ~/.config/elm-swapper/0.19.0/elm --version
+time                 21.92 ms   (21.54 ms .. 22.33 ms)
+                     0.999 R²   (0.998 R² .. 1.000 R²)
+mean                 22.43 ms   (22.23 ms .. 22.60 ms)
+std dev              423.7 μs   (340.0 μs .. 557.9 μs)
 ```
 
 ## Configuration
