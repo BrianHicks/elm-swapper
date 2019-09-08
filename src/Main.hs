@@ -2,7 +2,9 @@
 
 module Main where
 
+import Data.Aeson
 import Data.Aeson.Types
+import qualified Data.ByteString.Lazy
 import System.Directory
 import System.FilePath
 
@@ -20,10 +22,25 @@ nearestElmJsonHelp filepath = do
                then pure Nothing
                else nearestElmJsonHelp next
 
-versionDecoder :: Value -> Parser String
-versionDecoder = withObject "elm-version" (\o -> o .: "elm-version")
+data Version =
+  Version String
+  deriving (Show)
+
+instance FromJSON Version where
+  parseJSON = withObject "Version" (\o -> fmap Version (o .: "elm-version"))
+
+elmVersionFromElmJson :: Maybe FilePath -> IO Version
+elmVersionFromElmJson maybeElmJson =
+  case maybeElmJson of
+    Nothing -> pure $ Version "0.19.0"
+    Just path -> do
+      json <- Data.ByteString.Lazy.readFile path
+      case eitherDecode json of
+        Left message -> fail message
+        Right version -> pure version
 
 main :: IO ()
 main = do
   elmJson <- nearestElmJson
-  putStrLn (show elmJson)
+  elmVersion <- elmVersionFromElmJson elmJson
+  putStrLn (show elmVersion)
