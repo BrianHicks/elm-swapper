@@ -47,6 +47,7 @@ downloadURL version =
         case System.Info.os of
           "darwin" -> Right "mac"
           "linux" -> Right "linux"
+          -- TODO: what is the identifier for Windows?
           _ ->
             Left
               ("I don't know how to download binaries for the " ++
