@@ -65,7 +65,11 @@ downloadURL version =
         version ++ "/binary-for-" ++ os ++ "-" ++ arch ++ ".gz"
    in downloadURLHelp <$> possiblyOS <*> possiblyArch
 
+cacheLocation :: String -> IO String
+cacheLocation version =
+  getXdgDirectory XdgCache ("elm-swapper" </> version </> "elm")
+
 main :: IO ()
 main = do
   (Version elmVersion) <- elmVersionFromElmJson
-  putStrLn (show (downloadURL elmVersion))
+  cacheLocation (elmVersion) >>= putStrLn
