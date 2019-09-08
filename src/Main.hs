@@ -29,9 +29,10 @@ data Version =
 instance FromJSON Version where
   parseJSON = withObject "Version" (\o -> fmap Version (o .: "elm-version"))
 
-elmVersionFromElmJson :: Maybe FilePath -> IO Version
-elmVersionFromElmJson maybeElmJson =
-  case maybeElmJson of
+elmVersionFromElmJson :: IO Version
+elmVersionFromElmJson = do
+  elmJson <- nearestElmJson
+  case elmJson of
     Nothing -> pure $ Version "0.19.0"
     Just path -> do
       json <- Data.ByteString.Lazy.readFile path
@@ -41,6 +42,5 @@ elmVersionFromElmJson maybeElmJson =
 
 main :: IO ()
 main = do
-  elmJson <- nearestElmJson
-  elmVersion <- elmVersionFromElmJson elmJson
+  elmVersion <- elmVersionFromElmJson
   putStrLn (show elmVersion)
