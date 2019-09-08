@@ -1,5 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
+import Data.Aeson.Types
 import System.Directory
 import System.FilePath
 
@@ -16,6 +19,9 @@ nearestElmJsonHelp filepath = do
           in if next == filepath
                then pure Nothing
                else nearestElmJsonHelp next
+
+versionDecoder :: Value -> Parser String
+versionDecoder = withObject "elm-version" (\o -> o .: "elm-version")
 
 main :: IO ()
 main = do
