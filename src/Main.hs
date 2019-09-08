@@ -7,6 +7,7 @@ import Data.Aeson.Types
 import qualified Data.ByteString.Lazy
 import System.Directory
 import System.FilePath
+import qualified System.Info
 
 nearestElmJson :: IO (Maybe FilePath)
 nearestElmJson = getCurrentDirectory >>= nearestElmJsonHelp
@@ -40,7 +41,30 @@ elmVersionFromElmJson = do
         Left message -> fail message
         Right version -> pure version
 
+downloadURL :: String -> Either String String
+downloadURL version =
+  let possiblyOS =
+        case System.Info.os of
+          "darwin" -> Right "mac"
+          "linux" -> Right "linux"
+          _ ->
+            Left
+              ("I don't know how to download binaries for the " ++
+               System.Info.os ++ " operating system right now!")
+      possiblyArch =
+        case System.Info.arch of
+          "x86_64" -> Right "64-bit"
+          _ ->
+            Left
+              ("I don't know how to download binaries for the " ++
+               System.Info.arch ++ " architecture right now!")
+      downloadURLHelp :: String -> String -> String
+      downloadURLHelp os arch =
+        "https://github.com/elm/compiler/releases/download/" ++
+        version ++ "/binary-for-" ++ os ++ "-" ++ arch ++ ".gz"
+   in downloadURLHelp <$> possiblyOS <*> possiblyArch
+
 main :: IO ()
 main = do
-  elmVersion <- elmVersionFromElmJson
-  putStrLn (show elmVersion)
+  (Version elmVersion) <- elmVersionFromElmJson
+  putStrLn (show (downloadURL elmVersion))
