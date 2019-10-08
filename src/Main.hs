@@ -72,4 +72,5 @@ cacheLocation version =
 main :: IO ()
 main = do
   (Version elmVersion) <- elmVersionFromElmJson
-  cacheLocation (elmVersion) >>= putStrLn
+  binary <- cacheLocation elmVersion
+  putStrLn binary
