@@ -18,13 +18,14 @@ nearestElmJsonHelp filepath = do
   exists <- doesFileExist candidate
   if exists
     then pure $ Just candidate
-    else let next = takeDirectory filepath
-          in if next == filepath
-               then pure Nothing
-               else nearestElmJsonHelp next
+    else
+      let next = takeDirectory filepath
+       in if next == filepath
+            then pure Nothing
+            else nearestElmJsonHelp next
 
-data Version =
-  Version String
+data Version
+  = Version String
   deriving (Show)
 
 instance FromJSON Version where
@@ -50,19 +51,28 @@ downloadURL version =
           -- TODO: what is the identifier for Windows?
           _ ->
             Left
-              ("I don't know how to download binaries for the " ++
-               System.Info.os ++ " operating system right now!")
+              ( "I don't know how to download binaries for the "
+                  ++ System.Info.os
+                  ++ " operating system right now!"
+              )
       possiblyArch =
         case System.Info.arch of
           "x86_64" -> Right "64-bit"
           _ ->
             Left
-              ("I don't know how to download binaries for the " ++
-               System.Info.arch ++ " architecture right now!")
+              ( "I don't know how to download binaries for the "
+                  ++ System.Info.arch
+                  ++ " architecture right now!"
+              )
       downloadURLHelp :: String -> String -> String
       downloadURLHelp os arch =
-        "https://github.com/elm/compiler/releases/download/" ++
-        version ++ "/binary-for-" ++ os ++ "-" ++ arch ++ ".gz"
+        "https://github.com/elm/compiler/releases/download/"
+          ++ version
+          ++ "/binary-for-"
+          ++ os
+          ++ "-"
+          ++ arch
+          ++ ".gz"
    in downloadURLHelp <$> possiblyOS <*> possiblyArch
 
 cacheLocation :: String -> IO String
@@ -74,10 +84,9 @@ main = do
   (Version elmVersion) <- elmVersionFromElmJson
   binary <- cacheLocation elmVersion
   binaryExists <- doesFileExist binary
-  if not binaryExists then
-    case downloadURL elmVersion of
+  if not binaryExists
+    then case downloadURL elmVersion of
       Left err -> fail err
       Right url ->
         fail $ "TODO: get the binary from " ++ url
-  else
-    fail "TODO: handle what happens when the binary exists"
+    else fail "TODO: handle what happens when the binary exists"
