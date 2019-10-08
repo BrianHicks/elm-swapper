@@ -73,4 +73,11 @@ main :: IO ()
 main = do
   (Version elmVersion) <- elmVersionFromElmJson
   binary <- cacheLocation elmVersion
-  putStrLn binary
+  binaryExists <- doesFileExist binary
+  if not binaryExists then
+    case downloadURL elmVersion of
+      Left err -> fail err
+      Right url ->
+        fail $ "TODO: get the binary from " ++ url
+  else
+    fail "TODO: handle what happens when the binary exists"
